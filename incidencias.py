@@ -20,3 +20,7 @@ def evaluar_incidencia_jornada():
     else:
         print("\njornada sin incidencias reportadas.")
         return "ninguna", 0
+    # prueba rapida del modulo
+if __name__ == "__main__":
+    print("probando incidencias...")
+    evaluar_incidencia_jornada()
