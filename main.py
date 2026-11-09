@@ -1,0 +1,56 @@
+# archivo principal del simulador de planta
+from config import estable, alta, critico, max_horas_turno, materia_prima_inicial
+from reportes import mostrar_panel_estado, calcular_indicadores
+from produccion import verificar_viabilidad, simular_produccion_jornada
+from incidencias import evaluar_incidencia_jornada
+from mantenimiento import registrar_mantenimiento
+
+def main():
+    print("bienvenido al simulador de la planta de produccion")
+    
+    materia = materia_prima_inicial
+    horas_acumuladas_maquinas = 0
+    
+    # simulacion de 3 jornadas de trabajo
+    for jornada in range(1, 4):
+        print(f"\n--- INICIO JORNADA {jornada} ---")
+        horas_disponibles = max_horas_turno
+        
+        mostrar_panel_estado(jornada, materia, horas_disponibles, estable)
+        
+        # pedir plan de produccion al usuario
+        try:
+            plan = int(input("cuantas unidades desea planificar producir hoy?: "))
+        except:
+            plan = 50 # valor por defecto si escriben mal
+            
+        # verificar si se puede producir
+        if verificar_viabilidad(materia, horas_disponibles):
+            # simular produccion
+            producidas, buenas, gastado, tiempo_usado = simular_produccion_jornada(plan, materia, horas_disponibles)
+            
+            materia = materia - gastado
+            horas_disponibles = horas_disponibles - tiempo_usado
+            horas_acumuladas_maquinas = horas_acumuladas_maquinas + tiempo_usado
+            
+            # evaluar incidencias aleatorias
+            tipo_incidencia, horas_perdidas = evaluar_incidencia_jornada()
+            horas_disponibles = max(0, horas_disponibles - horas_perdidas)
+            
+            # mantenimiento preventivo
+            horas_acumuladas_maquinas, costo_mant = registrar_mantenimiento(horas_acumuladas_maquinas)
+            
+            # reporte final del dia
+            eficiencia = calcular_indicadores(producidas, buenas)
+            print("\nresumen del dia:")
+            print("- unidades producidas:", producidas)
+            print("- unidades buenas:", buenas)
+            print("- eficiencia obtenida:", eficiencia, "%")
+            print("- costo de mantenimiento:", costo_mant)
+        else:
+            print("no se pudo ejecutar la jornada por falta de recursos.")
+            
+    print("\nsimulacion finalizada con exito.")
+
+if __name__ == "__main__":
+    main()
