@@ -25,3 +25,11 @@ def simular_produccion_jornada(planificada, materia_disponible, horas_disponible
     materia_consumida = unidades_posibles
     
     return unidades_posibles, buenas, materia_consumida, round(horas_usadas, 2)
+# prueba rapida del modulo
+if __name__ == "__main__":
+    print("probando produccion...")
+    producidas, buenas, gastado, tiempo = simular_produccion_jornada(60, 100, 8)
+    print("producidas:", producidas)
+    print("buenas:", buenas)
+    print("materia gastada:", gastado)
+    print("tiempo usado:", tiempo)

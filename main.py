@@ -1,5 +1,5 @@
 # archivo principal del simulador de planta
-from config import estable, alta, critico, max_horas_turno, materia_prima_inicial
+from config import estable, alta, critico, obtener_configuracion_inicial
 from reportes import mostrar_panel_estado, calcular_indicadores
 from produccion import verificar_viabilidad, simular_produccion_jornada
 from incidencias import evaluar_incidencia_jornada
@@ -8,13 +8,15 @@ from mantenimiento import registrar_mantenimiento
 def main():
     print("bienvenido al simulador de la planta de produccion")
     
-    materia = materia_prima_inicial
+    # obtenemos los valores desde el modulo config
+    config = obtener_configuracion_inicial()
+    materia = config["materia_inicial"]
     horas_acumuladas_maquinas = 0
     
     # simulacion de 3 jornadas de trabajo
     for jornada in range(1, 4):
         print(f"\n--- INICIO JORNADA {jornada} ---")
-        horas_disponibles = max_horas_turno
+        horas_disponibles = config["horas_turno"]
         
         mostrar_panel_estado(jornada, materia, horas_disponibles, estable)
         
@@ -46,7 +48,7 @@ def main():
             print("- unidades producidas:", producidas)
             print("- unidades buenas:", buenas)
             print("- eficiencia obtenida:", eficiencia, "%")
-            print("- costo de mantenimiento:", costo_mant)
+            print("- costo de mantenimiento: $", costo_mant)
         else:
             print("no se pudo ejecutar la jornada por falta de recursos.")
             
