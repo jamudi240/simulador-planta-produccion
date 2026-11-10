@@ -1,6 +1,6 @@
 # archivo principal del simulador de planta
 from config import estable, alta, critico, obtener_configuracion_inicial
-from reportes import mostrar_panel_estado, calcular_indicadores
+from reportes import formatear_dinero, validar_entrada_numerica
 from produccion import verificar_viabilidad, simular_produccion_jornada
 from incidencias import evaluar_incidencia_jornada
 from mantenimiento import registrar_mantenimiento
@@ -15,11 +15,9 @@ def main():
     
     # simulacion de 3 jornadas de trabajo
     for jornada in range(1, 4):
-        print(f"\n--- INICIO JORNADA {jornada} ---")
         horas_disponibles = config["horas_turno"]
         
-        mostrar_panel_estado(jornada, materia, horas_disponibles, estable)
-        
+        print(f"\n--- INICIO JORNADA {jornada} | Materia: {materia} | Horas: {horas_disponibles} ---")
         # pedir plan de produccion al usuario
         try:
             plan = int(input("cuantas unidades desea planificar producir hoy?: "))
@@ -43,7 +41,7 @@ def main():
             horas_acumuladas_maquinas, costo_mant = registrar_mantenimiento(horas_acumuladas_maquinas)
             
             # reporte final del dia
-            eficiencia = calcular_indicadores(producidas, buenas)
+            eficiencia = (buenas / producidas) * 100 if producidas > 0 else 0
             print("\nresumen del dia:")
             print("- unidades producidas:", producidas)
             print("- unidades buenas:", buenas)
